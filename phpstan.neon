@@ -1,0 +1,22 @@
+parameters:
+    level: 5
+    paths:
+        - src/
+    excludePaths:
+        - vendor/*
+        - tests/*
+    bootstrapFiles:
+        - frontend100p-settings.php
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+    scanDirectories:
+        - D:\programs\laragon\www\empecont\wp-includes
+        - D:\programs\laragon\www\empecont\wp-admin
+    ignoreErrors:
+        # Ignorar errores específicos de WordPress
+        - '#^Function [a-zA-Z0-9\\_]+\(\) has no return type specified.#'
+        - '#^Function apply_filters invoked with [0-9]+ parameters, 2 required.#'
+        # Ignorar errores para hooks de WordPress
+        - '#^Hook [a-zA-Z0-9\\_]+ not found in WordPress#'
+    typeAliases:
+        WP_Post: 'object'
+        WP_Error: 'object'
