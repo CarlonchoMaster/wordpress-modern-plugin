@@ -1,7 +1,7 @@
 parameters:
     level: 5
     paths:
-        - src/
+        - D:\programs\laragon\www\empecont\wp-content\plugins\frontend100p-settings\includes
     excludePaths:
         - vendor/*
         - tests/*

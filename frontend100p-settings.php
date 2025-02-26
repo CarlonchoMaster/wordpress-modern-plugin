@@ -24,38 +24,42 @@
  * Text Domain:       frontend100p-settings
  * Domain Path:       /languages
  */
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH')) {
   exit;
 }
 
 //Constantes del plugin
 const FRONTEND100P_SETTINGS_VERSION = '1.0.0';
-define( "FRONTEND100P_SETTINGS_PATH", plugin_dir_path( __FILE__ ) );
-define( 'FRONTEND100P_SETTINGS_URL', plugin_dir_url( __FILE__ ) );
+define("FRONTEND100P_SETTINGS_PATH", plugin_dir_path(__FILE__));
+define('FRONTEND100P_SETTINGS_URL', plugin_dir_url(__FILE__));
 
 require_once FRONTEND100P_SETTINGS_PATH . 'vendor/autoload.php';
 
-
+use Frontend100p\Frontend100p_Settings\AppContainer;
 use Frontend100p\Frontend100p_Settings\Frontend100pPlugin;
-use Frontend100p\Frontend100p_Settings\DIContainer;
+use Frontend100p\Frontend100p_Settings\Services\DIContainerService;
 
 // Inicializar el contenedor
-$diContainer = new DIContainer();
+$container = new DIContainerService();
 
 // Cargar configuración de servicios
 $services = require_once FRONTEND100P_SETTINGS_PATH . 'config/services.php';
-$services( $diContainer );
+$services($container);
+
+// Guardar en el contenedor estático
+AppContainer::set($container);
 
 //Inicializar el plugin
 /**
  * @throws Exception
  */
-function init_frontend100p_settings(): void {
-  global $diContainer;
-  $plugin = $diContainer->get( Frontend100pPlugin::class );
+function init_frontend100p_settings(): void
+{
+  global $container;
+  $plugin = $container->get(Frontend100pPlugin::class);
   $plugin->init();
 }
 
-add_action( 'plugins_loaded', 'init_frontend100p_settings', 10, 0 );
+add_action('plugins_loaded', 'init_frontend100p_settings', 10, 0);
 
 

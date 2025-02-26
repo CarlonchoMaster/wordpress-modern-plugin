@@ -25,10 +25,10 @@
   },
   "autoload": {
     "psr-4": {
-      "Frontend100p\\Frontend100p_Settings\\": "src/"
+      "Frontend100p\\Frontend100p_Settings\\": "includes/"
     },
     "files": [
-      "src/Helpers/AssetsHelper.php"
+      "includes/helpers.php"
     ]
   },
   "config": {
