@@ -1,6 +1,6 @@
 <?php
 
-namespace Frontend100p\Frontend100p_Settings\Pages;
+namespace Fronpe\Fronpe_Settings\Shared\Presentation\Pages;
 
 class AdminPage
 {

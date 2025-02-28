@@ -1,16 +1,15 @@
 <?php
 
-namespace Frontend100p\Frontend100p_Settings;
+namespace Fronpe\Fronpe_Settings;
 
-use Frontend100p\Frontend100p_Settings\Services\AssetService;
-use Frontend100p\Frontend100p_Settings\Services\MigrationService;
-use Frontend100p\Frontend100p_Settings\Services\ShortCodeService;
+use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\MigrationService;
+use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\ShortCodeService;
 
-readonly class Frontend100pPlugin
+class FronpePlugin
 {
   public function __construct(
-    private ShortCodeService $shortcodeSrv,
-    private MigrationService $migrationSrv
+    private readonly ShortCodeService $shortcodeSrv,
+    private readonly MigrationService $migrationSrv
   ) {
   }
 

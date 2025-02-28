@@ -1,12 +1,12 @@
 <?php
 
-use Frontend100p\Frontend100p_Settings\Services\DIContainerService;
-use Frontend100p\Frontend100p_Settings\Frontend100pPlugin;
+use Fronpe\Fronpe_Settings\Services\Depend;
+use Frontend100p\Frontend100p_Settings\FronpePlugin;
 use Frontend100p\Frontend100p_Settings\Services\MigrationService;
 use Frontend100p\Frontend100p_Settings\Services\AssetService;
 use Frontend100p\Frontend100p_Settings\Services\ShortCodeService;
 
-return function (DIContainerService $containerSrv) {
+return function (Depend $containerSrv) {
   // Registrar parámetros
   $containerSrv->setParameter('plugin_path', FRONTEND100P_SETTINGS_PATH);
   $containerSrv->setParameter('plugin_url', FRONTEND100P_SETTINGS_URL);
@@ -17,10 +17,10 @@ return function (DIContainerService $containerSrv) {
   $containerSrv->set(AssetService::class);
   $containerSrv->set(ShortCodeService::class);
 
-  $containerSrv->set(Frontend100pPlugin::class, function ($container) {
+  $containerSrv->set(FronpePlugin::class, function ($container) {
     $shortcodeSrv = $container->get(ShortCodeService::class);
     $migrationSrv = $container->get(MigrationService::class);
 
-    return new Frontend100pPlugin(shortcodeSrv: $shortcodeSrv, migrationSrv: $migrationSrv);
+    return new FronpePlugin(shortcodeSrv: $shortcodeSrv, migrationSrv: $migrationSrv);
   });
 };

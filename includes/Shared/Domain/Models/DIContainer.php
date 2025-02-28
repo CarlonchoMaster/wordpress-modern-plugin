@@ -1,12 +1,12 @@
 <?php
 
-namespace Frontend100p\Frontend100p_Settings\Services;
+namespace Fronpe\Fronpe_Settings\Shared\Domain\Models;
 
 use Exception;
 use ReflectionClass;
 use ReflectionException;
 
-class DIContainerService
+class DIContainer
 {
   private array $instances = [];
   private array $definitions = [];
@@ -16,6 +16,7 @@ class DIContainerService
    * Registra múltiples servicios a partir de un array
    *
    * @param array $services Array asociativo con [id => concrete]
+   *
    * @return void
    */
   public function setMany(array $services): void
@@ -24,6 +25,7 @@ class DIContainerService
       // Si la clave es numérica, asumimos que $concrete es tanto el ID como la implementación
       if (is_int($id)) {
         $this->set($concrete);
+
         return;
       }
 
@@ -43,6 +45,7 @@ class DIContainerService
    * Obtiene múltiples servicios a partir de un array de IDs
    *
    * @param array $ids Array de IDs de servicios
+   *
    * @return array Array asociativo con [id => instancia]
    * @throws Exception
    */

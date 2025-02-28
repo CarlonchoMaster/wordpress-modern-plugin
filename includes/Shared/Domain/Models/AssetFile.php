@@ -1,6 +1,6 @@
 <?php
 
-namespace Frontend100p\Frontend100p_Settings\Models;
+namespace Fronpe\Fronpe_Settings\Shared\Domain\Models;
 
 class AssetFile
 {

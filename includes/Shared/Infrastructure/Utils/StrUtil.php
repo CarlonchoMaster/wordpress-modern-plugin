@@ -1,6 +1,5 @@
 <?php
-
-namespace Frontend100p\Frontend100p_Settings\Utils;
+namespace Fronpe\Fronpe_Settings\Shared\Infrastructure\Utils;
 
 class StrUtil
 {

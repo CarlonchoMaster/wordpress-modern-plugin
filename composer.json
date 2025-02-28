@@ -15,7 +15,7 @@
     "analyse": "phpstan analyse -c phpstan.neon"
   },
   "require": {
-    "php": ">=8.2"
+    "php": ">=8.1"
   },
   "require-dev": {
     "phpstan/phpstan": "^2.1",
@@ -25,10 +25,10 @@
   },
   "autoload": {
     "psr-4": {
-      "Frontend100p\\Frontend100p_Settings\\": "includes/"
+      "Fronpe\\Fronpe_Settings\\": "includes/"
     },
     "files": [
-      "includes/helpers.php"
+      "includes/Shared/Presentation/helpers.php"
     ]
   },
   "config": {
