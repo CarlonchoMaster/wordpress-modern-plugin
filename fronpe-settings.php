@@ -53,13 +53,13 @@ ContainerService::set($container);
 /**
  * @throws Exception
  */
-function init_frontend100p_settings(): void
+function init_fronpe_settings(): void
 {
   global $container;
   $plugin = $container->get(FronpePlugin::class);
   $plugin->init();
 }
 
-add_action('plugins_loaded', 'init_frontend100p_settings', 10, 0);
+add_action('plugins_loaded', 'init_fronpe_settings', 10, 0);
 
 

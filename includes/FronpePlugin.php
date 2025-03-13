@@ -5,11 +5,11 @@ namespace Fronpe\Fronpe_Settings;
 use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\MigrationService;
 use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\ShortCodeService;
 
-class FronpePlugin
+readonly class FronpePlugin
 {
   public function __construct(
-    private readonly ShortCodeService $shortcodeSrv,
-    private readonly MigrationService $migrationSrv
+    private ShortCodeService $shortcodeSrv,
+    private MigrationService $migrationSrv
   ) {
   }
 
