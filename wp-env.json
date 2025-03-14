@@ -1,0 +1,20 @@
+{
+  "core": null,
+  "phpVersion": "8.0",
+  "plugins": [
+    "."
+  ],
+  "themes": [],
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": true,
+    "WP_PHP_BINARY": "php"
+  },
+  "port": 8888,
+  "testsPort": 8889,
+  "env": {
+    "tests": {
+      "port": 8889
+    }
+  }
+}
