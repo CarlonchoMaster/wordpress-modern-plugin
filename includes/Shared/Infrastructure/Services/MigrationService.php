@@ -21,7 +21,7 @@ class MigrationService
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
 
-    add_option('my_awesome_plugin_version', FRONTEND100P_SETTINGS_VERSION);
+    add_option('my_awesome_plugin_version', FRONPE_SETTINGS_VERSION);
   }
 
   public function deactivate()

@@ -9,18 +9,19 @@ readonly class FronpePlugin
 {
   public function __construct(
     private ShortCodeService $shortcodeSrv,
-    private MigrationService $migrationSrv
+    private MigrationService $migrationSrv,
+    private string $pluginPath
   ) {
   }
 
   public function init(): void
   {
     // Registrar hooks
-    register_activation_hook(FRONTEND100P_SETTINGS_PATH . 'frontend100p-settings.php',
+    register_activation_hook($this->pluginPath . 'fronpe-settings.php',
       [$this->migrationSrv, 'activate']
     );
 
-    register_deactivation_hook(FRONTEND100P_SETTINGS_PATH . 'frontend100p-settings.php',
+    register_deactivation_hook($this->pluginPath . 'fronpe-settings.php',
       [$this->migrationSrv, 'deactivate']
     );
 

@@ -16,7 +16,7 @@ class ShortCodeService
     ], $atts);
 
     ob_start();
-    include FRONTEND100P_SETTINGS_PATH . 'templates/shortcode/feature.php';
+    include FRONPE_SETTINGS_PATH . 'templates/shortcode/feature.php';
 
     return ob_get_clean();
   }
@@ -25,9 +25,9 @@ class ShortCodeService
   {
     wp_enqueue_style(
       'my-awesome-plugin-frontend',
-      FRONTEND100P_SETTINGS_URL . 'assets/css/frontend.css',
+      FRONPE_SETTINGS_URL . 'assets/css/frontend.css',
       [],
-      FRONTEND100P_SETTINGS_VERSION
+      FRONPE_SETTINGS_VERSION
     );
   }
 }

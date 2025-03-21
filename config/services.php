@@ -1,16 +1,17 @@
 <?php
 
-use Fronpe\Fronpe_Settings\Services\Depend;
-use Frontend100p\Frontend100p_Settings\FronpePlugin;
-use Frontend100p\Frontend100p_Settings\Services\MigrationService;
-use Frontend100p\Frontend100p_Settings\Services\AssetService;
-use Frontend100p\Frontend100p_Settings\Services\ShortCodeService;
+use Fronpe\Fronpe_Settings\Shared\Domain\Models\DIContainer;
+use Fronpe\Fronpe_Settings\FronpePlugin;
+use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\MigrationService;
+use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\AssetService;
+use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\ShortCodeService;
+use Fronpe\Fronpe_Settings\Shared\Domain\Constants\AppKeys;
 
-return function (Depend $containerSrv) {
+return function (DIContainer $containerSrv) {
   // Registrar parámetros
-  $containerSrv->setParameter('plugin_path', FRONTEND100P_SETTINGS_PATH);
-  $containerSrv->setParameter('plugin_url', FRONTEND100P_SETTINGS_URL);
-  $containerSrv->setParameter('version', FRONTEND100P_SETTINGS_VERSION);
+  $containerSrv->setParameter(AppKeys::PLUGIN_PATH, FRONPE_SETTINGS_PATH);
+  $containerSrv->setParameter(AppKeys::PLUGIN_URL, FRONPE_SETTINGS_URL);
+  $containerSrv->setParameter(AppKeys::VERSION, FRONPE_SETTINGS_VERSION);
 
   // Registrar servicios
   $containerSrv->set(MigrationService::class);
@@ -21,6 +22,6 @@ return function (Depend $containerSrv) {
     $shortcodeSrv = $container->get(ShortCodeService::class);
     $migrationSrv = $container->get(MigrationService::class);
 
-    return new FronpePlugin(shortcodeSrv: $shortcodeSrv, migrationSrv: $migrationSrv);
+    return new FronpePlugin(shortcodeSrv: $shortcodeSrv, migrationSrv: $migrationSrv, pluginPath: FRONPE_SETTINGS_PATH);
   });
 };

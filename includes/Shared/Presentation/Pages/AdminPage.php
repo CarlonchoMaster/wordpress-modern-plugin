@@ -24,6 +24,6 @@ class AdminPage
 
   public function render_page(): void
   {
-    include FRONTEND100P_SETTINGS_PATH . 'templates/admin/main-page.php';
+    include FRONPE_SETTINGS_PATH . 'templates/admin/main-page.php';
   }
 }

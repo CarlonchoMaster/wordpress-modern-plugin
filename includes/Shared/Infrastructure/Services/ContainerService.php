@@ -21,8 +21,7 @@ class ContainerService
 
   public function __clone(): void
   {
-    _doing_it_wrong(__FUNCTION__, esc_html(__('Cloning of feloopCustom_API is forbidden.')), esc_attr($this->parent->_version));
+    _doing_it_wrong(__FUNCTION__, esc_html(__('Cloning of Fronpe_Setting is forbidden.')), esc_attr($this->parent->_version));
   }
-
 
 }

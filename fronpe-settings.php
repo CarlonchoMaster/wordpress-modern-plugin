@@ -29,11 +29,11 @@ if ( ! defined('ABSPATH')) {
 }
 
 //Constantes del plugin
-const FRONTEND100P_SETTINGS_VERSION = '1.0.0';
-define("FRONTEND100P_SETTINGS_PATH", plugin_dir_path(__FILE__));
-define('FRONTEND100P_SETTINGS_URL', plugin_dir_url(__FILE__));
+const FRONPE_SETTINGS_VERSION = '1.0.0';
+define('FRONPE_SETTINGS_PATH', plugin_dir_path(__FILE__));
+define('FRONPE_SETTINGS_URL', plugin_dir_url(__FILE__));
 
-require_once FRONTEND100P_SETTINGS_PATH . 'vendor/autoload.php';
+require_once FRONPE_SETTINGS_PATH . 'vendor/autoload.php';
 
 use Fronpe\Fronpe_Settings\FronpePlugin;
 use Fronpe\Fronpe_Settings\Shared\Domain\Models\DIContainer;
@@ -43,7 +43,7 @@ use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\ContainerService;
 $container = new DIContainer();
 
 // Cargar configuración de servicios
-$services = require_once FRONTEND100P_SETTINGS_PATH . 'config/services.php';
+$services = require_once FRONPE_SETTINGS_PATH . 'config/services.php';
 $services($container);
 
 // Guardar en el contenedor estático
