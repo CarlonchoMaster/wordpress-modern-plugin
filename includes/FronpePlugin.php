@@ -1,15 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace Fronpe\Fronpe_Settings;
 
-use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\MigrationService;
-use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\ShortCodeService;
+use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\{AdminSettingsService,
+  ImageService,
+  MigrationService,
+  SecurityService,
+  SeoService,
+  ShortCodeService
+};
 
 readonly class FronpePlugin
 {
   public function __construct(
     private ShortCodeService $shortcodeSrv,
     private MigrationService $migrationSrv,
+    private ImageService $imageSrv,
+    private AdminSettingsService $adminSettingsSrv,
+    private SecurityService $securitySrv,
+    private SeoService $seoSrv,
     private string $pluginPath
   ) {
   }
@@ -31,5 +41,8 @@ readonly class FronpePlugin
     }*/
 
     $this->shortcodeSrv->init();
+    $this->imageSrv->init();
+    $this->seoSrv->init();
+    $this->securitySrv->init();
   }
 }

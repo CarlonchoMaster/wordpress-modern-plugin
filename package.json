@@ -1,0 +1,33 @@
+{
+  "name": "fronpe-settings",
+  "version": "1.0.0",
+  "description": "Plugin para producto de fronpe.com",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarlonchoMaster/wordpress-modern-plugin.git"
+  },
+  "keywords": [
+    "node22",
+    "webpack"
+  ],
+  "author": "Carlos Pereda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CarlonchoMaster/wordpress-modern-plugin/issues"
+  },
+  "homepage": "https://github.com/CarlonchoMaster/wordpress-modern-plugin#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1",
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "babel-loader": "^9.2.1",
+    "@types/node": "^22.13.14"
+  }
+}

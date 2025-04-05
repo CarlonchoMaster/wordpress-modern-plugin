@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Fronpe\Fronpe_Settings\Shared\Infrastructure\Services;
 
 class AssetService
 {
-  public function enqueue_style(string $styleName, bool $isAdmin, string $styleSheetName): void
+  public function enqueueStyle(string $styleName, bool $isAdmin, string $styleSheetName): void
   {
     $partialPath = $isAdmin ? 'admin/css' : 'public/css';
     $fullPath    = plugin_dir_url($this->entry_point) . 'assets/' . $partialPath . $styleSheetName;
@@ -12,7 +13,7 @@ class AssetService
     wp_enqueue_style($styleName, $fullPath, [], $this->getVersion());
   }
 
-  public function enqueue_script(string $scriptName, bool $isAdmin, string $scriptFileName, array $deps = []): void
+  public function enqueueScript(string $scriptName, bool $isAdmin, string $scriptFileName, array $deps = []): void
   {
     $partialPath = $isAdmin ? 'admin/js' : 'public/js';
     $fullPath    = plugin_dir_url($this->entry_point) . 'assets/' . $partialPath . $scriptFileName;

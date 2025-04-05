@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Fronpe\Fronpe_Settings\Shared\Domain\Models;
 
-class AssetFile
+readonly class AssetFile
 {
   public function __construct(
     private string $name,
@@ -11,12 +12,12 @@ class AssetFile
   ) {
   }
 
-  public function get_name(): string
+  public function getName(): string
   {
     return $this->name;
   }
 
-  public function get_asset_file_name(): string
+  public function getAssetFileName(): string
   {
     return $this->assetFileName;
   }

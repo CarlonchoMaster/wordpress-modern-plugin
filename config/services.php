@@ -1,27 +1,61 @@
 <?php
+declare(strict_types=1);
 
 use Fronpe\Fronpe_Settings\Shared\Domain\Models\DIContainer;
 use Fronpe\Fronpe_Settings\FronpePlugin;
-use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\MigrationService;
-use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\AssetService;
-use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\ShortCodeService;
 use Fronpe\Fronpe_Settings\Shared\Domain\Constants\AppKeys;
+use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\{AdminSettingsService,
+  ImageService,
+  LoggerService,
+  MigrationService,
+  AssetService,
+  SeoService,
+  ShortCodeService,
+  SecurityService
+};
 
-return function (DIContainer $containerSrv) {
+return function (DIContainer $container) {
   // Registrar parámetros
-  $containerSrv->setParameter(AppKeys::PLUGIN_PATH, FRONPE_SETTINGS_PATH);
-  $containerSrv->setParameter(AppKeys::PLUGIN_URL, FRONPE_SETTINGS_URL);
-  $containerSrv->setParameter(AppKeys::VERSION, FRONPE_SETTINGS_VERSION);
+  $container->setParameter(AppKeys::PLUGIN_PATH, FRONPE_SETTINGS_PATH);
+  $container->setParameter(AppKeys::PLUGIN_URL, FRONPE_SETTINGS_URL);
+  $container->setParameter(AppKeys::VERSION, FRONPE_SETTINGS_VERSION);
+  $container->setParameter(AppKeys::PLUGIN_NAME, FRONPE_SETTINGS_BASENAME);
 
   // Registrar servicios
-  $containerSrv->set(MigrationService::class);
-  $containerSrv->set(AssetService::class);
-  $containerSrv->set(ShortCodeService::class);
+  $container->set(MigrationService::class);
+  $container->set(AssetService::class);
+  $container->set(ShortCodeService::class);
+  $container->set(LoggerService::class);
+  $container->set(ImageService::class);
+  $container->set(SeoService::class);
+  $container->set(SecurityService::class);
 
-  $containerSrv->set(FronpePlugin::class, function ($container) {
-    $shortcodeSrv = $container->get(ShortCodeService::class);
-    $migrationSrv = $container->get(MigrationService::class);
+  // Registrar el servicio de Admin Settings
+  $container->set(AdminSettingsService::class, function (DIContainer $diContainer) {
+    $assetService = $diContainer->get(AssetService::class);
 
-    return new FronpePlugin(shortcodeSrv: $shortcodeSrv, migrationSrv: $migrationSrv, pluginPath: FRONPE_SETTINGS_PATH);
+    return new AdminSettingsService(
+      assetService: $assetService,
+      pluginVersion: FRONPE_SETTINGS_VERSION
+    );
+  });
+
+  $container->set(FronpePlugin::class, function (DIContainer $diContainer) {
+    $shortcodeSrv     = $diContainer->get(ShortCodeService::class);
+    $migrationSrv     = $diContainer->get(MigrationService::class);
+    $imageSrv         = $diContainer->get(ImageService::class);
+    $adminSettingsSrv = $diContainer->get(AdminSettingsService::class);
+    $seoSrv           = $diContainer->get(SeoService::class);
+    $securitySrv = $diContainer->get(SecurityService::class);
+
+    return new FronpePlugin(
+      shortcodeSrv: $shortcodeSrv,
+      migrationSrv: $migrationSrv,
+      imageSrv: $imageSrv,
+      adminSettingsSrv: $adminSettingsSrv,
+      securitySrv: $securitySrv,
+      seoSrv: $seoSrv,
+      pluginPath: FRONPE_SETTINGS_PATH
+    );
   });
 };

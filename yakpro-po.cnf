@@ -1,0 +1,81 @@
+<?php
+// YAK Pro - Php Obfuscator: Config File
+
+// Ignorar clases predefinidas de PHP y WordPress
+$conf->t_ignore_pre_defined_classes     = 'all';
+
+// Arrays de nombres a ignorar (hooks, funciones y clases de WordPress)
+$conf->t_ignore_constants               = array('ABSPATH', 'WP_DEBUG');
+$conf->t_ignore_variables               = array('wpdb', 'wp_query', 'wp_rewrite', 'wp_scripts');
+$conf->t_ignore_functions               = array(
+    // WordPress functions
+    'add_action', 'add_filter', 'do_action', 'apply_filters',
+    'register_activation_hook', 'register_deactivation_hook',
+    'wp_enqueue_script', 'wp_enqueue_style',
+    // Your public hook callbacks
+    'init_fronpe_settings'
+);
+$conf->t_ignore_methods                 = array('init', 'activate', 'deactivate', 'enqueue_assets', 'render_shortcode');
+
+// Ignorar las clases principales de tu plugin que WordPress debe reconocer
+$conf->t_ignore_classes                 = array('FronpePlugin');
+
+// Prefijos a ignorar
+$conf->t_ignore_functions_prefix        = array('wp_', 'Fronpe_', 'wp_ajax_', 'wp_ajax_nopriv_');
+$conf->t_ignore_classes_prefix          = array('WP_');
+
+// Configuración del modo de parser
+$conf->parser_mode                      = 'PREFER_PHP7';
+
+// Modo de ofuscación y longitud
+$conf->scramble_mode                    = 'identifier';
+$conf->scramble_length                  = 5;
+
+// Extensiones a ofuscar
+$conf->t_obfuscate_php_extension        = array('php');
+
+// Configuración de elementos a ofuscar
+$conf->obfuscate_constant_name          = true;
+$conf->obfuscate_variable_name          = true;
+$conf->obfuscate_function_name          = true;
+$conf->obfuscate_class_name             = true;
+$conf->obfuscate_interface_name         = true;
+$conf->obfuscate_trait_name             = true;
+$conf->obfuscate_class_constant_name    = true;
+$conf->obfuscate_property_name          = true;
+$conf->obfuscate_method_name            = true;
+$conf->obfuscate_namespace_name         = false; // Con cuidado para WordPress
+$conf->obfuscate_label_name             = true;
+$conf->obfuscate_if_statement           = true;
+$conf->obfuscate_loop_statement         = true;
+$conf->obfuscate_string_literal         = false; // Puede causar problemas con strings de WordPress
+
+// Mezclar declaraciones (cuidado con el rendimiento)
+$conf->shuffle_stmts                    = true;
+$conf->shuffle_stmts_min_chunk_size     = 3;
+$conf->shuffle_stmts_chunk_mode         = 'fixed';
+$conf->shuffle_stmts_chunk_ratio        = 20;
+
+// Formateo y opciones de salida
+$conf->strip_indentation                = true;
+$conf->abort_on_error                   = true;
+$conf->confirm                          = true;
+$conf->silent                           = false;
+
+// Directorios (estos normalmente se pasan por línea de comandos)
+$conf->source_directory                 = null;
+$conf->target_directory                 = null;
+
+// Archivos o directorios a mantener sin ofuscar
+$conf->t_keep                           = array(
+    'fronpe-settings.php', // Archivo principal del plugin
+    'vendor',              // Dependencias de terceros
+    'assets',              // Archivos CSS/JS
+    'languages',            // Traducciones
+    'obfuscate',
+    'node_modules'
+);
+
+// Comentario de usuario para insertar en archivos ofuscados
+$conf->user_comment = "Ofuscado por YAK Pro - Código protegido";
+?>

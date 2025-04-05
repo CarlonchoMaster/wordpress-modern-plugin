@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Fronpe\Fronpe_Settings\Shared\Infrastructure\Services;
 
 use Fronpe\Fronpe_Settings\Shared\Domain\Models\DIContainer;

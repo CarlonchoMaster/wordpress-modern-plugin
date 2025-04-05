@@ -1,19 +1,21 @@
 <?php
+declare(strict_types=1);
+
 namespace Fronpe\Fronpe_Settings\Shared\Infrastructure\Services;
 
 class ShortCodeService
 {
   public function init(): void
   {
-    add_shortcode('awesome_feature', [$this, 'render_shortcode']);
-    add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+    add_shortcode('awesome_feature', [$this, 'renderShortcode']);
+    add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
   }
 
-  public function render_shortcode($atts, $content = null): bool|string
+  public function renderShortcode($attrs, $content = null): bool|string
   {
     $attributes = shortcode_atts([
       'type' => 'default',
-    ], $atts);
+    ], $attrs);
 
     ob_start();
     include FRONPE_SETTINGS_PATH . 'templates/shortcode/feature.php';
@@ -21,7 +23,7 @@ class ShortCodeService
     return ob_get_clean();
   }
 
-  public function enqueue_assets(): void
+  public function enqueueAssets(): void
   {
     wp_enqueue_style(
       'my-awesome-plugin-frontend',

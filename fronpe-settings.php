@@ -32,6 +32,7 @@ if ( ! defined('ABSPATH')) {
 const FRONPE_SETTINGS_VERSION = '1.0.0';
 define('FRONPE_SETTINGS_PATH', plugin_dir_path(__FILE__));
 define('FRONPE_SETTINGS_URL', plugin_dir_url(__FILE__));
+define('FRONPE_SETTINGS_BASENAME', plugin_basename(__FILE__));
 
 require_once FRONPE_SETTINGS_PATH . 'vendor/autoload.php';
 
@@ -53,13 +54,14 @@ ContainerService::set($container);
 /**
  * @throws Exception
  */
-function init_fronpe_settings(): void
+function initFronpeSettings(): void
 {
   global $container;
+  /** @var FronpePlugin $plugin */
   $plugin = $container->get(FronpePlugin::class);
   $plugin->init();
 }
 
-add_action('plugins_loaded', 'init_fronpe_settings', 10, 0);
+add_action('plugins_loaded', 'initFronpeSettings', 10, 0);
 
 

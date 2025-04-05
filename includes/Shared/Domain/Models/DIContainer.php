@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Fronpe\Fronpe_Settings\Shared\Domain\Models;
 
@@ -9,55 +10,20 @@ use ReflectionException;
 class DIContainer
 {
   private array $instances = [];
+  /**
+   * @var array<string, string|callable> $definitions
+   */
   private array $definitions = [];
   private array $parameters = [];
 
-  /**
-   * Registra múltiples servicios a partir de un array
-   *
-   * @param array $services Array asociativo con [id => concrete]
-   *
-   * @return void
-   */
-  public function setMany(array $services): void
-  {
-    foreach ($services as $id => $concrete) {
-      // Si la clave es numérica, asumimos que $concrete es tanto el ID como la implementación
-      if (is_int($id)) {
-        $this->set($concrete);
-
-        return;
-      }
-
-      $this->set($id, $concrete);
-    }
-  }
-
-  public function set(string $id, $concrete = null): void
+  public function set(string $id, ?callable $concrete = null): void
   {
     if ($concrete === null) {
-      $concrete = $id;
+      $this->definitions[$id] = $id;
+
+      return;
     }
     $this->definitions[$id] = $concrete;
-  }
-
-  /**
-   * Obtiene múltiples servicios a partir de un array de IDs
-   *
-   * @param array $ids Array de IDs de servicios
-   *
-   * @return array Array asociativo con [id => instancia]
-   * @throws Exception
-   */
-  public function getMany(array $ids): array
-  {
-    $services = [];
-
-    foreach ($ids as $id) {
-      $services[$id] = $this->get($id);
-    }
-
-    return $services;
   }
 
   /**
@@ -82,11 +48,16 @@ class DIContainer
     return $object;
   }
 
+  public function setParameter(string $name, mixed $value): void
+  {
+    $this->parameters[$name] = $value;
+  }
+
   /**
    * @throws ReflectionException
    * @throws Exception
    */
-  private function resolve($concrete)
+  private function resolve(callable|string $concrete)
   {
     if (is_callable($concrete)) {
       return $concrete($this);
@@ -100,7 +71,7 @@ class DIContainer
 
     $constructor = $reflector->getConstructor();
 
-    if (null === $constructor) {
+    if ($constructor === null) {
       return new $concrete;
     }
 
@@ -147,10 +118,5 @@ class DIContainer
     }
 
     return $dependencies;
-  }
-
-  public function setParameter(string $name, $value): void
-  {
-    $this->parameters[$name] = $value;
   }
 }
