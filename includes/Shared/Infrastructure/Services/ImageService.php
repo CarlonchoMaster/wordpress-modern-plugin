@@ -10,12 +10,7 @@ class ImageService
     add_action('intermediate_image_sizes_advanced', [$this, 'removeSizeImage']);
   }
 
-  /**
-   * Elimina tamaños de imagen predeterminados
-   *
-   * @param array $sizes Tamaños de imagen
-   * @return array
-   */
+  /** Elimina tamaños de imagen predeterminados */
   public function removeSizeImage(array $sizes): array
   {
     unset($sizes['medium_large']);

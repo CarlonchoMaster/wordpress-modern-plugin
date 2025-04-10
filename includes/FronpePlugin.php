@@ -7,19 +7,19 @@ use Fronpe\Fronpe_Settings\Shared\Infrastructure\Services\{AdminSettingsService,
   ImageService,
   MigrationService,
   SecurityService,
-  SeoService,
-  ShortCodeService
+  SEOService,
+  ShortcodeService
 };
 
 readonly class FronpePlugin
 {
   public function __construct(
-    private ShortCodeService $shortcodeSrv,
+    private ShortcodeService $shortcodeSrv,
     private MigrationService $migrationSrv,
     private ImageService $imageSrv,
     private AdminSettingsService $adminSettingsSrv,
     private SecurityService $securitySrv,
-    private SeoService $seoSrv,
+    private SEOService $seoSrv,
     private string $pluginPath
   ) {
   }

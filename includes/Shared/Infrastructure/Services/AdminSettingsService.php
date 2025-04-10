@@ -23,8 +23,7 @@ readonly class AdminSettingsService
   }
 
   /**
-   * Inicializa el servicio de administración
-   * Hook para WordPress
+   * Inicializa el servicio de administración Hook para WordPress
    */
   public function init(): void
   {
@@ -35,7 +34,6 @@ readonly class AdminSettingsService
 
   /**
    * Agrega la página de menú en el panel de WordPress
-   * Hook para WordPress
    */
   public function addAdminMenu(): void
   {
@@ -166,7 +164,6 @@ readonly class AdminSettingsService
 
   /**
    * Renderiza la página de configuración principal
-   * Hook para WordPress
    */
   public function renderSettingsPage(): void
   {
@@ -189,30 +186,35 @@ readonly class AdminSettingsService
     $translatedTextVersion           = sprintf(__('Version: %s', 'fronpe-settings'), esc_html($this->pluginVersion));
     $translatedTextThankYou          = __('Thank you for using Fronpe Settings Plugin!', 'fronpe-settings');
 
-    $htmlView = <<<HTML
-        <div class="wrap">
-            <h1>{$escapedPageTitle}</h1>
-            <form method="post" action="options.php">{$bufferView}</form>
-            <div class="fronpe-info-box">
-                <h3>{$translatedTextPluginInformation}</h3>
-                <p>{$translatedTextVersion}</p>
-                <p>{$translatedTextThankYou}</p>
-            </div>
-        </div>
-    HTML;
+    $htmlView = '
+    <div class="wrap">
+      <h1>%s</h1>
+      <form method="post" action="options.php">%s</form>
+      <div class="fronpe-info-box">
+        <h3>%s</h3>
+        <p>%s</p>
+        <p>%s</p>
+      </div>
+    </div>
+    ';
 
     // Imprimir todo el contenido con un solo echo
-    echo $htmlView;
+    echo sprintf(
+      $htmlView,
+      $escapedPageTitle,
+      $bufferView,
+      $translatedTextPluginInformation,
+      $translatedTextVersion,
+      $translatedTextThankYou
+    );
   }
 
   /**
    * Renderiza la descripción de la sección general
-   * Hook para WordPress
    */
   public function renderGeneralSection(): void
   {
-    $output = '<p>' . __('Configure the general settings for the plugin.', 'fronpe-settings') . '</p>';
-    echo $output;
+    echo sprintf('<p>%s</p>', __('Configure the general settings for the plugin.', 'fronpe-settings'));
   }
 
   /**
@@ -221,8 +223,7 @@ readonly class AdminSettingsService
    */
   public function renderAdvancedSection(): void
   {
-    $output = '<p>' . __('Advanced configuration options for developers.', 'fronpe-settings') . '</p>';
-    echo $output;
+    echo sprintf('<p>%s</p>', __('Advanced configuration options for developers.', 'fronpe-settings'));
   }
 
   /**
