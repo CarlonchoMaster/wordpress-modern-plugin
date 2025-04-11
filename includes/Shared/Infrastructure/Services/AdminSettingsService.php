@@ -12,7 +12,6 @@ readonly class AdminSettingsService
   private string $optionGroup;
 
   public function __construct(
-    private AssetService $assetService,
     private string $pluginVersion
   ) {
     $this->pageTitle   = 'Fronpe Settings';
@@ -50,7 +49,6 @@ readonly class AdminSettingsService
 
   /**
    * Registra las configuraciones, secciones y campos
-   * Hook para WordPress
    */
   public function registerSettings(): void
   {
@@ -141,7 +139,6 @@ readonly class AdminSettingsService
 
   /**
    * Sanitiza las opciones antes de guardarlas
-   * Hook para WordPress
    */
   public function sanitizeGeneralSettings($input): array
   {
@@ -186,27 +183,20 @@ readonly class AdminSettingsService
     $translatedTextVersion           = sprintf(__('Version: %s', 'fronpe-settings'), esc_html($this->pluginVersion));
     $translatedTextThankYou          = __('Thank you for using Fronpe Settings Plugin!', 'fronpe-settings');
 
-    $htmlView = '
-    <div class="wrap">
-      <h1>%s</h1>
-      <form method="post" action="options.php">%s</form>
-      <div class="fronpe-info-box">
-        <h3>%s</h3>
-        <p>%s</p>
-        <p>%s</p>
+    $htmlView = <<<HTML
+      <div class="wrap">
+        <h1>$escapedPageTitle</h1>
+        <form method="post" action="options.php">$bufferView</form>
+        <div class="fronpe-info-box">
+          <h3>$translatedTextPluginInformation</h3>
+          <p>$translatedTextVersion</p>
+          <p>$translatedTextThankYou</p>
+        </div>
       </div>
-    </div>
-    ';
+    HTML;
 
     // Imprimir todo el contenido con un solo echo
-    echo sprintf(
-      $htmlView,
-      $escapedPageTitle,
-      $bufferView,
-      $translatedTextPluginInformation,
-      $translatedTextVersion,
-      $translatedTextThankYou
-    );
+    echo $htmlView;
   }
 
   /**
@@ -214,7 +204,10 @@ readonly class AdminSettingsService
    */
   public function renderGeneralSection(): void
   {
-    echo sprintf('<p>%s</p>', __('Configure the general settings for the plugin.', 'fronpe-settings'));
+    echo sprintf(
+      '<p>%s</p>',
+      __('Configure the general settings for the plugin.', 'fronpe-settings')
+    );
   }
 
   /**
@@ -223,12 +216,14 @@ readonly class AdminSettingsService
    */
   public function renderAdvancedSection(): void
   {
-    echo sprintf('<p>%s</p>', __('Advanced configuration options for developers.', 'fronpe-settings'));
+    echo sprintf(
+      '<p>%s</p>',
+      __('Advanced configuration options for developers.', 'fronpe-settings')
+    );
   }
 
   /**
    * Renderiza un campo de tipo checkbox
-   * Hook para WordPress
    */
   public function renderCheckboxField(array $args): void
   {
@@ -239,22 +234,26 @@ readonly class AdminSettingsService
     $checked     = isset($settings[$labelFor]) ? checked('1', $settings[$labelFor], false) : '';
 
     // Construir el HTML en una variable
-    $output = '';
-    $output .= '<input type="checkbox" id="' . esc_attr($labelFor) . '" ';
-    $output .= 'name="' . esc_attr($fieldName) . '" ';
-    $output .= 'value="1" ' . $checked . ' />';
+    $htmlView = sprintf(
+      '<input type="checkbox" id="%s" name="%s" value="1" %s />',
+      esc_attr($labelFor),
+      esc_attr($fieldName),
+      $checked
+    );
 
     if ( ! empty($description)) {
-      $output .= '<p class="description">' . esc_html($description) . '</p>';
+      $htmlView .= sprintf(
+        '<p class="description">%s</p>',
+        esc_html($description)
+      );
     }
 
     // Imprimir todo el contenido con un solo echo
-    echo $output;
+    echo $htmlView;
   }
 
   /**
    * Renderiza un campo de tipo texto
-   * Hook para WordPress
    */
   public function renderTextField(array $args): void
   {
@@ -265,23 +264,26 @@ readonly class AdminSettingsService
     $value       = $settings[$labelFor] ?? '';
 
     // Construir el HTML en una variable
-    $output = '';
-    $output .= '<input type="text" id="' . esc_attr($labelFor) . '" ';
-    $output .= 'name="' . esc_attr($fieldName) . '" ';
-    $output .= 'value="' . esc_attr($value) . '" ';
-    $output .= 'class="regular-text" />';
+    $htmlView = sprintf(
+      '<input type="text" id="%s" name="%s" value="%s" class="regular-text" />',
+      esc_attr($labelFor),
+      esc_attr($fieldName),
+      esc_attr($value)
+    );
 
     if ( ! empty($description)) {
-      $output .= '<p class="description">' . esc_html($description) . '</p>';
+      $htmlView .= sprintf(
+        '<p class="description">%s</p>',
+        esc_html($description)
+      );
     }
 
     // Imprimir todo el contenido con un solo echo
-    echo $output;
+    echo $htmlView;
   }
 
   /**
    * Renderiza un campo de tipo textarea
-   * Hook para WordPress
    */
   public function renderTextareaField(array $args): void
   {
@@ -292,25 +294,26 @@ readonly class AdminSettingsService
     $value       = $settings[$labelFor] ?? '';
 
     // Construir el HTML en una variable
-    $output = '';
-    $output .= '<textarea id="' . esc_attr($labelFor) . '" ';
-    $output .= 'name="' . esc_attr($fieldName) . '" ';
-    $output .= 'rows="5" ';
-    $output .= 'class="large-text">';
-    $output .= esc_textarea($value);
-    $output .= '</textarea>';
+    $htmlView = sprintf(
+      '<textarea id="%s" name="%s" rows="5" class="large-text">%s</textarea>',
+      esc_attr($labelFor),
+      esc_attr($fieldName),
+      esc_textarea($value)
+    );
 
     if ( ! empty($description)) {
-      $output .= '<p class="description">' . esc_html($description) . '</p>';
+      $htmlView .= sprintf(
+        '<p class="description">%s</p>',
+        esc_html($description)
+      );
     }
 
     // Imprimir todo el contenido con un solo echo
-    echo $output;
+    echo $htmlView;
   }
 
   /**
    * Carga estilos y scripts en el admin
-   * Hook para WordPress
    */
   public function enqueueAdminAssets($hook): void
   {
@@ -338,14 +341,9 @@ readonly class AdminSettingsService
   }
 
   /**
-   * Métodos personalizados que siguen PSR-1 y PSR-2
-   */
-
-  /**
    * Obtiene una configuración específica
-   * Método personalizado (camelCase)
    */
-  private function getSetting(string $key, $default = null)
+  private function getSetting(string $key, mixed $default)
   {
     $settings = get_option('fronpe_general_settings', []);
 
@@ -354,48 +352,44 @@ readonly class AdminSettingsService
 
   /**
    * Genera una notificación para el admin
-   * Método personalizado (camelCase)
    */
-  private function addAdminNotice(string $message, string $type = 'info'): void
+  private function addAdminNotice(string $message): void
   {
-    add_action('admin_notices', function () use ($message, $type) {
-      $class = 'notice notice-' . esc_attr($type);
-      printf('<div class="%1$s"><p>%2$s</p></div>', $class, $message);
+    add_action('admin_notices', function () use ($message) {
+      $class = 'notice notice-info';
+      printf('<div class="%s"><p>%s</p></div>', $class, $message);
     });
   }
 
   /**
    * Construye un campo con un formato específico
-   * Método personalizado (camelCase)
    */
   private function buildFieldHtml(string $type, array $attributes, string $description = ''): string
   {
-    $html = '';
-
-    // Tag de apertura específico según el tipo
-    if ($type === 'textarea') {
-      $html .= '<textarea';
-    } else {
-      $html .= '<input type="' . esc_attr($type) . '"';
-    }
+    $htmlView     = '';
+    $htmlAttrView = '';
 
     // Agregar atributos
     foreach ($attributes as $key => $value) {
-      $html .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
+      $htmlAttrView .= sprintf(' %s="%s"', esc_attr($key), esc_attr($value));
     }
 
-    // Cerrar tag según el tipo
+    // Tag de apertura específica según el tipo
     if ($type === 'textarea') {
-      $html .= '>' . esc_textarea($attributes['value'] ?? '') . '</textarea>';
-    } else {
-      $html .= ' />';
+      $htmlView .= sprintf(
+        '<textarea %s>%s</textarea>',
+        $htmlAttrView,
+        esc_textarea($attributes['value'] ?? '')
+      );
+
+      $htmlView .= ! empty($description) ? sprintf('<p class="description">%s</p>', esc_html($description)) : '';
+
+      return $htmlView;
     }
 
-    // Agregar descripción si existe
-    if ( ! empty($description)) {
-      $html .= '<p class="description">' . esc_html($description) . '</p>';
-    }
+    $htmlView .= sprintf('<input type="%s" %s />', esc_attr($type), $htmlAttrView);
+    $htmlView .= ! empty($description) ? sprintf('<p class="description">%s</p>', esc_html($description)) : '';
 
-    return $html;
+    return $htmlView;
   }
 }

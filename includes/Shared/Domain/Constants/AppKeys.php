@@ -6,6 +6,6 @@ class AppKeys
 {
   public const PLUGIN_PATH = 'pluginPath';
   public const PLUGIN_URL = 'pluginUrl';
-  public const VERSION = 'version';
+  public const PLUGIN_VERSION = 'pluginVersion';
   public const PLUGIN_NAME = 'pluginName';
 }

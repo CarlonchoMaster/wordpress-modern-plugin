@@ -22,7 +22,7 @@ return function (DIContainer $container) {
   // Registrar parámetros
   $container->setParameter(AppKeys::PLUGIN_PATH, FRONPE_SETTINGS_PATH);
   $container->setParameter(AppKeys::PLUGIN_URL, FRONPE_SETTINGS_URL);
-  $container->setParameter(AppKeys::VERSION, FRONPE_SETTINGS_VERSION);
+  $container->setParameter(AppKeys::PLUGIN_VERSION, FRONPE_SETTINGS_VERSION);
   $container->setParameter(AppKeys::PLUGIN_NAME, FRONPE_SETTINGS_BASENAME);
 
   // Registrar shortcodes
@@ -47,10 +47,7 @@ return function (DIContainer $container) {
 
   // Registrar el servicio de Admin Settings
   $container->set(AdminSettingsService::class, function (DIContainer $di) {
-    return new AdminSettingsService(
-      assetService: $di->get(AssetService::class),
-      pluginVersion: FRONPE_SETTINGS_VERSION
-    );
+    return new AdminSettingsService($di->getParameter(AppKeys::PLUGIN_VERSION, FRONPE_SETTINGS_VERSION));
   });
 
   $container->set(FronpePlugin::class, function (DIContainer $di) {
@@ -61,7 +58,7 @@ return function (DIContainer $container) {
       adminSettingsSrv: $di->get(AdminSettingsService::class),
       securitySrv: $di->get(SecurityService::class),
       seoSrv: $di->get(SEOService::class),
-      pluginPath: FRONPE_SETTINGS_PATH
+      pluginPath: $di->getParameter(AppKeys::PLUGIN_PATH, FRONPE_SETTINGS_PATH)
     );
   });
 };
