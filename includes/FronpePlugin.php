@@ -17,7 +17,6 @@ readonly class FronpePlugin
     private ShortcodeService $shortcodeSrv,
     private MigrationService $migrationSrv,
     private ImageService $imageSrv,
-    private AdminSettingsService $adminSettingsSrv,
     private SecurityService $securitySrv,
     private SEOService $seoSrv,
     private string $pluginPath

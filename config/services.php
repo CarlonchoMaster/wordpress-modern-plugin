@@ -55,7 +55,6 @@ return function (DIContainer $container) {
       shortcodeSrv: $di->get(ShortcodeService::class),
       migrationSrv: $di->get(MigrationService::class),
       imageSrv: $di->get(ImageService::class),
-      adminSettingsSrv: $di->get(AdminSettingsService::class),
       securitySrv: $di->get(SecurityService::class),
       seoSrv: $di->get(SEOService::class),
       pluginPath: $di->getParameter(AppKeys::PLUGIN_PATH, FRONPE_SETTINGS_PATH)
