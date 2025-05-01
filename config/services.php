@@ -33,10 +33,22 @@ return function (DIContainer $container) {
   // Registrar servicios
   $container->set(MigrationService::class);
   $container->set(AssetService::class);
-  $container->set(LoggerService::class);
   $container->set(ImageService::class);
   $container->set(SecurityService::class);
   $container->set(SEOService::class, fn(DIContainer $di) => new SEOService($di->get(LoggerService::class)));
+  $container->set(LoggerService::class, function () {
+    $logger = new LoggerService();
+
+    // Opcionalmente, registrar manejador de errores
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+      $logger->registerErrorHandler();
+
+      // Opcional: revisar y rotar el log si es necesario
+      $logger->rotateLogIfNeeded();
+    }
+
+    return $logger;
+  });
   $container->set(ShortcodeService::class, function (DIContainer $di) {
     return new ShortcodeService(
       mainSliderShortcode: $di->get(MainSliderShortcode::class),

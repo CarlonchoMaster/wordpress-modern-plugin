@@ -3,152 +3,239 @@ declare(strict_types=1);
 
 namespace Fronpe\Fronpe_Settings\Shared\Infrastructure\Services;
 
-use Exception;
-use Monolog\Handler\FirePHPHandler;
-use Monolog\Handler\StreamHandler;
-use Monolog\Level;
-use Monolog\Logger;
+use Fronpe\Fronpe_Settings\Shared\Domain\Constants\LoggerLevel;
+use Throwable;
 
+/**
+ * Servicio de logging que utiliza el sistema nativo de WordPress
+ */
 readonly class LoggerService
 {
-  private Logger $logger;
-  private string $logPath;
+  private string $source;
 
+  /**
+   * @param string $name Nombre del origen para identificar los mensajes de log
+   */
   public function __construct(string $name = 'fronpe-settings')
   {
-    // Crear logger
-    $this->logger = new Logger($name);
-
-    // Define el directorio de logs
-    $logDir        = WP_CONTENT_DIR . '/logs';
-    $this->logPath = $logDir . '/' . $name . '.log';
-
-    // Verificar y crear el directorio de logs si no existe
-    $this->_ensureLogDirectoryExists($logDir);
-
-    // Añadir handlers
-    $this->logger->pushHandler(new StreamHandler($this->logPath, Level::Debug));
-
-    // En desarrollo podríamos añadir este handler para depurar
-    if (defined('WP_DEBUG') && WP_DEBUG) {
-      $this->logger->pushHandler(new FirePHPHandler());
-    }
+    $this->source = $name;
   }
 
+  /**
+   * Registra un mensaje de nivel INFO
+   */
   public function info($message, array $context = []): void
   {
-    try {
-      $this->logger->info($message, $context);
-    } catch (Exception $e) {
-      error_log('Error al escribir log info: ' . $e->getMessage());
-    }
+    $this->writeLog(LoggerLevel::INFO, $message, $context);
   }
 
+  /**
+   * Registra un mensaje de nivel ERROR
+   */
   public function error($message, array $context = []): void
   {
-    try {
-      $this->logger->error($message, $context);
-    } catch (Exception $e) {
-      error_log('Error al escribir log error: ' . $e->getMessage());
-    }
+    $this->writeLog(LoggerLevel::ERROR, $message, $context);
   }
 
+  /**
+   * Registra un mensaje de nivel DEBUG
+   */
   public function debug($message, array $context = []): void
   {
-    try {
-      $this->logger->debug($message, $context);
-    } catch (Exception $e) {
-      error_log('Error al escribir log debug: ' . $e->getMessage());
-    }
+    $this->writeLog(LoggerLevel::DEBUG, $message, $context);
   }
 
+  /**
+   * Registra un mensaje de nivel WARNING
+   */
   public function warning($message, array $context = []): void
   {
-    try {
-      $this->logger->warning($message, $context);
-    } catch (Exception $e) {
-      error_log('Error al escribir log warning: ' . $e->getMessage());
-    }
+    $this->writeLog(LoggerLevel::WARN, $message, $context);
   }
 
   /**
-   * Obtener la ruta del archivo de log
+   * Escribe un mensaje en el log con el nivel especificado
    */
-  public function getLogPath(): string
+  private function writeLog(string $level, mixed $message, array $context = []): void
   {
-    return $this->logPath;
+    // Verificar si el debugging está activado en WordPress
+    if ( ! $this->isDebugEnabled()) {
+      return;
+    }
+
+    // Formatear el mensaje
+    $formattedMessage = $this->formatMessage($level, $message, $context);
+
+    // Usar la función nativa de PHP para escribir en el log
+    error_log($formattedMessage);
   }
 
   /**
-   * Asegura que el directorio de logs exista, sea escribible y que el archivo de log también exista
+   * Formatea un mensaje para el log con nivel, origen y contexto
    */
-  private function _ensureLogDirectoryExists(string $logDir): void
+  private function formatMessage(string $level, mixed $message, array $context = []): string
   {
-    // Verificar si el directorio existe
-    if ( ! file_exists($logDir)) {
-      $this->createDirectoryLog($logDir);
+    // Convertir objetos o arrays a string si es necesario
+    if ( ! is_string($message)) {
+      $message = print_r($message, true);
     }
 
-    // Verificar que el directorio sea escribible
-    if ( ! is_writable($logDir)) {
-      error_log("El directorio de logs no es escribible: $logDir");
+    // Formatear el mensaje básico con prefijo y nivel
+    $formattedMessage = sprintf(
+      "[%s] [%s] %s",
+      $this->source,
+      $level,
+      $message
+    );
 
-      return;
-    }
-
-    // Verificar si el archivo de log existe, y crearlo si no
-    if ( ! file_exists($this->logPath)) {
-      $this->createFileLog();
-    }
-
-    // Verificar que el archivo sea escribible
-    if (file_exists($this->logPath) && ! is_writable($this->logPath)) {
-      error_log("El archivo de log no es escribible: $this->logPath");
-    }
-  }
-
-  private function createDirectoryLog(string $logDir): void
-  {
-    // Intentar crear el directorio con permisos 0755 (propietario: lectura/escritura/ejecución, grupo y otros: lectura/ejecución)
-    if ( ! mkdir($logDir, 0755, true) && ! is_dir($logDir)) {
-      error_log("No se pudo crear el directorio de logs: $logDir");
-
-      return;
-    }
-
-    // Crear un archivo .htaccess para proteger los logs en servidores Apache
-    if ( ! file_exists("$logDir/.htaccess")) {
-      $data = '
-      # Denegar acceso a los archivos de log
-      <FilesMatch \"\.(log)$\">
-        Order allow,deny
-        Deny from all
-      </FilesMatch>
-      ';
-
-      file_put_contents("$logDir/.htaccess", $data);
-    }
-
-    // Crear un archivo index.php vacío para mayor seguridad
-    if ( ! file_exists("$logDir/index.php")) {
-      file_put_contents("$logDir/index.php", "<?php\n// Silence is golden.");
-    }
-  }
-
-  private function createFileLog(): void
-  {
-    try {
-      // Crear el archivo vacío
-      $result = file_put_contents($this->logPath, '');
-      if ($result === false) {
-        error_log("No se pudo crear el archivo de log: $this->logPath");
-
-        return;
+    // Agregar contexto si existe
+    if ( ! empty($context)) {
+      // Convertir el contexto a JSON o formato legible
+      $contextStr = json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+      if ($contextStr === false) {
+        // Si la conversión JSON falla, usar print_r
+        $contextStr = print_r($context, true);
       }
 
-      chmod($this->logPath, 0644);
-    } catch (Exception $e) {
-      error_log("Error al crear el archivo de log: " . $e->getMessage());
+      $formattedMessage .= " | Context: $contextStr";
+    }
+
+    return $formattedMessage;
+  }
+
+  /**
+   * Verifica si el debugging está habilitado en WordPress
+   */
+  private function isDebugEnabled(): bool
+  {
+    return defined('WP_DEBUG') && WP_DEBUG &&
+           defined('WP_DEBUG_LOG') && WP_DEBUG_LOG;
+  }
+
+  /**
+   * Registra el tiempo de ejecución de una operación
+   */
+  public function timeOperation(callable $operation, string $operationName): mixed
+  {
+    $startTime = microtime(true);
+    $result    = $operation();
+    $endTime   = microtime(true);
+
+    $executionTime = round(($endTime - $startTime) * 1000, 2);
+
+    $this->info(sprintf(
+      "Operación '%s' completada en %s ms",
+      $operationName,
+      $executionTime
+    ));
+
+    return $result;
+  }
+
+  /**
+   * Registra un manejador de errores PHP personalizado
+   */
+  public function registerErrorHandler(): void
+  {
+    // No registrar si no estamos en modo debug
+    if ( ! $this->isDebugEnabled()) {
+      return;
+    }
+
+    // Guardar el manejador existente
+    $previousHandler = set_error_handler(function (
+      int $errNo,
+      string $errStr,
+      string $errFile,
+      int $errLine
+    ) use (&$previousHandler) {
+      // No registrar si error reporting está desactivado (por @)
+      if ( ! (error_reporting() & $errNo)) {
+        return false;
+      }
+
+      // Mapear tipo de error a nivel de log
+      $level = match ($errNo) {
+        E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR,
+        E_RECOVERABLE_ERROR => LoggerLevel::ERROR,
+
+        E_WARNING, E_CORE_WARNING, E_COMPILE_WARNING,
+        E_USER_WARNING => LoggerLevel::WARN,
+
+        E_NOTICE, E_USER_NOTICE => LoggerLevel::NOTICE,
+        E_DEPRECATED, E_USER_DEPRECATED => LoggerLevel::DEPRECATED,
+
+        default => LoggerLevel::DEBUG
+      };
+
+      // Registrar el error
+      $this->writeLog($level, $errStr, [
+        'file'       => $errFile,
+        'line'       => $errLine,
+        'error_type' => $errNo
+      ]);
+
+      // Llamar al manejador anterior
+      if ($previousHandler !== null) {
+        return call_user_func($previousHandler, $errNo, $errStr, $errFile, $errLine);
+      }
+
+      // False permite a PHP manejar el error normalmente
+      return false;
+    });
+
+    // Registrar un manejador de excepciones no capturadas
+    set_exception_handler(function (Throwable $exception) {
+      $this->error($exception->getMessage(), [
+        'file'  => $exception->getFile(),
+        'line'  => $exception->getLine(),
+        'trace' => $exception->getTraceAsString()
+      ]);
+    });
+  }
+
+  /**
+   * Rota el archivo de log si excede un tamaño
+   * Útil para evitar archivos de log demasiado grandes
+   */
+  public function rotateLogIfNeeded(int $maxSizeBytes = 5242880): void
+  {
+    if ( ! $this->isDebugEnabled()) {
+      return;
+    }
+
+    // Normalmente el log está en wp-content/debug.log pero verificamos si está personalizado
+    $logFile = defined('WP_DEBUG_LOG') && is_string(WP_DEBUG_LOG)
+      ? WP_DEBUG_LOG
+      : WP_CONTENT_DIR . '/debug.log';
+
+    if ( ! file_exists($logFile) || ! is_readable($logFile) || ! is_writable($logFile)) {
+      return;
+    }
+
+    // Verificar tamaño
+    if (filesize($logFile) <= $maxSizeBytes) {
+      return;
+    }
+
+    $backupFile = WP_CONTENT_DIR . '/debug-' . date('Y-m-d-H-i-s') . '.log';
+
+    if (rename($logFile, $backupFile)) {
+      // Crear nuevo archivo de log con marca de rotación
+      file_put_contents(
+        $logFile,
+        sprintf(
+          "[%s] [] Log rotado en %s. Archivo anterior: %s\n",
+          $this->source,
+          date('Y-m-d H:i:s'),
+          basename($backupFile)
+        )
+      );
+
+      $this->info("Archivo de log rotado satisfactoriamente", [
+        'previous_size' => filesize($backupFile),
+        'backup_file'   => basename($backupFile)
+      ]);
     }
   }
 }

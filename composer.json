@@ -15,8 +15,7 @@
     "analyse": "phpstan analyse -c phpstan.neon"
   },
   "require": {
-    "php": ">=8.2",
-    "monolog/monolog": "^3.9"
+    "php": ">=8.2"
   },
   "require-dev": {
     "phpstan/phpstan": "^2.1",
